@@ -1,0 +1,97 @@
+# Smithery configuration file: https://smithery.ai/docs/build/project-config
+
+startCommand:
+  type: stdio
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => {
+      const args = [];
+      if(config.allowWrite) args.push('--allow_write');
+      if(config.logDir) { args.push('--log_dir', config.logDir); }
+      if(config.logLevel) { args.push('--log_level', config.logLevel); }
+      if(config.prefetch) args.push('--prefetch'); else args.push('--no-prefetch');
+      if(config.excludeTools && config.excludeTools.length>0) args.push('--exclude_tools', ...config.excludeTools);
+      // Connection args
+      args.push(
+        '--account', config.account,
+        '--user', config.user,
+        '--password', config.password,
+        '--role', config.role,
+        '--database', config.database,
+        '--schema', config.schema,
+        '--warehouse', config.warehouse
+      );
+      if(config.authenticator) args.push('--authenticator', config.authenticator);
+      return { command: 'mcp_snowflake_server', args };
+    }
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - account
+      - user
+      - password
+      - role
+      - database
+      - schema
+      - warehouse
+    properties:
+      account:
+        type: string
+        description: Snowflake account identifier
+      user:
+        type: string
+        description: Snowflake user name
+      password:
+        type: string
+        description: Snowflake password
+      role:
+        type: string
+        description: Snowflake role
+      database:
+        type: string
+        description: Snowflake database
+      schema:
+        type: string
+        description: Snowflake schema
+      warehouse:
+        type: string
+        description: Snowflake warehouse
+      authenticator:
+        type: string
+        description: Snowflake authenticator (optional)
+      allowWrite:
+        type: boolean
+        default: false
+        description: Allow write operations
+      logDir:
+        type: string
+        description: Directory for logs (optional)
+      logLevel:
+        type: string
+        default: INFO
+        description: Logging level
+      prefetch:
+        type: boolean
+        default: false
+        description: Prefetch table descriptions
+      excludeTools:
+        type: array
+        items:
+          type: string
+        default: []
+        description: Tools to exclude
+  exampleConfig:
+    account: abc12345.us-east-1
+    user: MY_USER
+    password: MY_PASS
+    role: SYSADMIN
+    database: MY_DB
+    schema: PUBLIC
+    warehouse: COMPUTE_WH
+    allowWrite: false
+    logDir: /app/logs
+    logLevel: INFO
+    prefetch: false
+    excludeTools: []
