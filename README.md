@@ -188,3 +188,24 @@ uv --directory /absolute/path/to/mcp_snowflake_server run mcp_snowflake_server
 ## License
 
 MIT
+
+## Smithery Registration
+
+This server is registered with the Smithery registry. To update the registration:
+
+1. Ensure you have the required dependencies:
+```bash
+pip install requests pyyaml
+```
+
+2. Run the registration script:
+```bash
+python register_smithery.py
+```
+
+The script will:
+- Load the server configuration from `smithery.yaml`
+- Check if the server exists in the registry
+- Create or update the server registration accordingly
+
+Note: The registration script requires a valid Smithery API key. The current key is stored in the script for development purposes. For production use, consider using environment variables or a secure configuration management system.
